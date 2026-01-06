@@ -59,7 +59,7 @@ type deleteResult struct {
 }
 
 func newSearchTool() mcp.Tool {
-	return mcp.NewTool("memos.search",
+	return mcp.NewTool("memos_search",
 		mcp.WithDescription("Search memos with filters and pagination"),
 		mcp.WithString("query", mcp.Description("Text to search for in memo content")),
 		mcp.WithNumber("creator_id", mcp.Description("Filter by creator user ID")),
@@ -75,14 +75,14 @@ func newSearchTool() mcp.Tool {
 }
 
 func newGetTool() mcp.Tool {
-	return mcp.NewTool("memos.get",
+	return mcp.NewTool("memos_get",
 		mcp.WithDescription("Get a memo by UID"),
 		mcp.WithString("memo_uid", mcp.Required(), mcp.Description("Memo UID")),
 	)
 }
 
 func newCreateTool() mcp.Tool {
-	return mcp.NewTool("memos.create",
+	return mcp.NewTool("memos_create",
 		mcp.WithDescription("Create a new memo"),
 		mcp.WithString("content", mcp.Required(), mcp.Description("Memo content in Markdown")),
 		mcp.WithString("visibility", mcp.Description("Visibility: PUBLIC, PROTECTED, PRIVATE (default PRIVATE)")),
@@ -91,7 +91,7 @@ func newCreateTool() mcp.Tool {
 }
 
 func newUpdateTool() mcp.Tool {
-	return mcp.NewTool("memos.update",
+	return mcp.NewTool("memos_update",
 		mcp.WithDescription("Update an existing memo"),
 		mcp.WithString("memo_uid", mcp.Required(), mcp.Description("Memo UID")),
 		mcp.WithString("content", mcp.Description("New memo content")),
@@ -101,7 +101,7 @@ func newUpdateTool() mcp.Tool {
 }
 
 func newDeleteTool() mcp.Tool {
-	return mcp.NewTool("memos.delete",
+	return mcp.NewTool("memos_delete",
 		mcp.WithDescription("Delete a memo by UID"),
 		mcp.WithString("memo_uid", mcp.Required(), mcp.Description("Memo UID")),
 		mcp.WithBoolean("force", mcp.Description("Force delete even if memo has associated data")),

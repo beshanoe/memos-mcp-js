@@ -29,7 +29,7 @@ CLI flags (Go binary):
 
 ## MCP Tools
 
-- `memos.search`
+- `memos_search`
   - `query` (string)
   - `creator_id` (number)
   - `tag` (string)
@@ -41,21 +41,21 @@ CLI flags (Go binary):
   - `order_by` (string)
   - `show_deleted` (boolean)
 
-- `memos.get`
+- `memos_get`
   - `memo_uid` (string)
 
-- `memos.create`
+- `memos_create`
   - `content` (string)
   - `visibility` (string, default PRIVATE)
   - `pinned` (boolean)
 
-- `memos.update`
+- `memos_update`
   - `memo_uid` (string)
   - `content` (string)
   - `visibility` (string)
   - `pinned` (boolean)
 
-- `memos.delete`
+- `memos_delete`
   - `memo_uid` (string)
   - `force` (boolean)
 
