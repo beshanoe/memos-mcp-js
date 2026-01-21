@@ -81,6 +81,9 @@ export class MemosClient {
     if (req.pinned !== undefined) {
       payload.pinned = req.pinned;
     }
+    if (req.tags !== undefined) {
+      payload.tags = req.tags;
+    }
 
     return this.request<Memo>("/api/v1/memos", {
       method: "POST",

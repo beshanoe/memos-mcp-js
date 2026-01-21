@@ -36,6 +36,7 @@ export interface CreateMemoRequest {
   content: string;
   visibility?: string;
   pinned?: boolean;
+  tags?: string[];
 }
 
 export interface UpdateMemoRequest {
