@@ -7,12 +7,24 @@ MCP (Model Context Protocol) server for the self-hosted notes app [Memos](https:
 - Search memos with filters and pagination
 - Create, read, update, delete memos
 - Access token authentication via Bearer token
-- Thin TypeScript wrapper for `npx` stdio startup
 
 ## Requirements
 
+- Node.js >= 18
 - A running Memos instance (default `http://localhost:5230`)
 - An access token (Settings → Access Tokens)
+
+## Installation
+
+```bash
+npm install @jtsang/memos-mcp
+```
+
+Or run directly with npx:
+
+```bash
+npx @jtsang/memos-mcp --base-url http://localhost:5230 --access-token YOUR_TOKEN
+```
 
 ## Configuration
 
@@ -21,71 +33,102 @@ Environment variables:
 - `MEMOS_BASE_URL` (default: `http://localhost:5230`)
 - `MEMOS_ACCESS_TOKEN` or `MEMOS_API_TOKEN`
 
-CLI flags (Go binary):
+CLI flags:
 
-- `--base-url`
-- `--access-token` / `--api-token`
-- `--timeout` (seconds)
+- `--base-url` - Memos instance URL
+- `--access-token` / `--api-token` - Bearer token for authentication
+- `--timeout` - HTTP timeout in seconds (default: 30)
 
 ## MCP Tools
 
-- `memos_search`
-  - `query` (string)
-  - `creator_id` (number)
-  - `tag` (string)
-  - `visibility` (PUBLIC/PROTECTED/PRIVATE)
-  - `pinned` (boolean)
-  - `limit` (number, default 10)
-  - `offset` (number, default 0)
-  - `page_token` (string)
-  - `order_by` (string)
-  - `show_deleted` (boolean)
+### memos_search
 
-- `memos_get`
-  - `memo_uid` (string)
+Search memos with filters and pagination.
 
-- `memos_create`
-  - `content` (string)
-  - `visibility` (string, default PRIVATE)
-  - `pinned` (boolean)
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| query | string | Text to search for in memo content |
+| creator_id | number | Filter by creator user ID |
+| tag | string | Filter by tag name |
+| visibility | string | PUBLIC, PROTECTED, or PRIVATE |
+| pinned | boolean | Filter by pinned status |
+| limit | number | Maximum results (default 10) |
+| offset | number | Results offset (default 0) |
+| page_token | string | Page token from previous response |
+| order_by | string | Order by fields, e.g. "pinned desc, display_time desc" |
+| show_deleted | boolean | Include deleted memos |
 
-- `memos_update`
-  - `memo_uid` (string)
-  - `content` (string)
-  - `visibility` (string)
-  - `pinned` (boolean)
+### memos_get
 
-- `memos_delete`
-  - `memo_uid` (string)
-  - `force` (boolean)
+Get a memo by UID.
 
-## Run locally
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| memo_uid | string | Yes | Memo UID |
 
-```bash
-go run ./cmd/memos-mcp --base-url http://localhost:5230 --access-token YOUR_TOKEN
-```
+### memos_create
 
-## MCP client config
+Create a new memo.
 
-```json
-{
-  "mcpServers": {
-    "memos": {
-      "command": "memos-mcp",
-      "args": ["--base-url", "http://localhost:5230", "--access-token", "YOUR_TOKEN"]
-    }
-  }
-}
-```
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| content | string | Yes | Memo content in Markdown |
+| visibility | string | No | PUBLIC, PROTECTED, or PRIVATE (default) |
+| pinned | boolean | No | Whether to pin the memo |
 
-## NPM wrapper (npx)
+### memos_update
+
+Update an existing memo.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| memo_uid | string | Yes | Memo UID |
+| content | string | No | New memo content |
+| visibility | string | No | PUBLIC, PROTECTED, or PRIVATE |
+| pinned | boolean | No | Whether to pin the memo |
+
+### memos_delete
+
+Delete a memo by UID.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| memo_uid | string | Yes | Memo UID |
+| force | boolean | No | Force delete even if memo has associated data |
+
+## MCP Client Configuration
+
+### Claude Desktop
+
+Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
 
 ```json
 {
   "mcpServers": {
     "memos": {
       "command": "npx",
-      "args": ["@jtsang/memos-mcp", "--base-url", "http://localhost:5230", "--access-token", "YOUR_TOKEN"]
+      "args": [
+        "@jtsang/memos-mcp",
+        "--base-url", "http://localhost:5230",
+        "--access-token", "YOUR_TOKEN"
+      ]
+    }
+  }
+}
+```
+
+### Using environment variables
+
+```json
+{
+  "mcpServers": {
+    "memos": {
+      "command": "npx",
+      "args": ["@jtsang/memos-mcp"],
+      "env": {
+        "MEMOS_BASE_URL": "http://localhost:5230",
+        "MEMOS_ACCESS_TOKEN": "YOUR_TOKEN"
+      }
     }
   }
 }
@@ -94,11 +137,22 @@ go run ./cmd/memos-mcp --base-url http://localhost:5230 --access-token YOUR_TOKE
 ## Development
 
 ```bash
-# Go tests
-go test ./...
-
-# JS wrapper tests
-cd js
+# Install dependencies
 npm install
+
+# Run in development mode
+npm run dev -- --base-url http://localhost:5230 --access-token YOUR_TOKEN
+
+# Type check
+npm run typecheck
+
+# Build
+npm run build
+
+# Run tests
 npm test
 ```
+
+## License
+
+MIT
