@@ -8,6 +8,7 @@ export const updateSchema = {
   content: z.string().optional().describe("New memo content"),
   visibility: z.string().optional().describe("Visibility: PUBLIC, PROTECTED, PRIVATE"),
   pinned: z.boolean().optional().describe("Whether to pin the memo"),
+  tags: z.array(z.string()).optional().describe("Tags for the memo (replaces existing tags)"),
 };
 
 export type UpdateArgs = {
@@ -15,6 +16,7 @@ export type UpdateArgs = {
   content?: string;
   visibility?: string;
   pinned?: boolean;
+  tags?: string[];
 };
 
 export async function handleUpdate(
@@ -30,6 +32,7 @@ export async function handleUpdate(
     content: args.content,
     visibility: args.visibility,
     pinned: args.pinned,
+    tags: args.tags,
   });
 
   return {

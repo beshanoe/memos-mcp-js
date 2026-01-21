@@ -42,6 +42,7 @@ export interface UpdateMemoRequest {
   content?: string;
   visibility?: string;
   pinned?: boolean;
+  tags?: string[];
 }
 
 export interface SearchResult {

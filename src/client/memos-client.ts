@@ -106,6 +106,9 @@ export class MemosClient {
     if (req.pinned !== undefined) {
       payload.pinned = req.pinned;
     }
+    if (req.tags !== undefined) {
+      payload.tags = req.tags;
+    }
 
     if (Object.keys(payload).length === 1) {
       throw new Error("at least one field must be provided for update");
