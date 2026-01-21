@@ -6,6 +6,7 @@ MCP (Model Context Protocol) server for the self-hosted notes app [Memos](https:
 
 - Search memos with filters and pagination
 - Create, read, update, delete memos
+- Tag support for organizing memos
 - Access token authentication via Bearer token
 
 ## Requirements
@@ -17,13 +18,10 @@ MCP (Model Context Protocol) server for the self-hosted notes app [Memos](https:
 ## Installation
 
 ```bash
-npm install @jtsang/memos-mcp
-```
-
-Or run directly with npx:
-
-```bash
-npx @jtsang/memos-mcp --base-url http://localhost:5230 --access-token YOUR_TOKEN
+git clone https://github.com/beshanoe/memos-mcp-js.git
+cd memos-mcp-js
+npm install
+npm run build
 ```
 
 ## Configuration
@@ -64,7 +62,7 @@ Get a memo by UID.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| memo_uid | string | Yes | Memo UID |
+| memo_uid | string | Yes | Memo UID or name (e.g., 'abc123' or 'memos/abc123') |
 
 ### memos_create
 
@@ -75,6 +73,7 @@ Create a new memo.
 | content | string | Yes | Memo content in Markdown |
 | visibility | string | No | PUBLIC, PROTECTED, or PRIVATE (default) |
 | pinned | boolean | No | Whether to pin the memo |
+| tags | string[] | No | Tags for the memo |
 
 ### memos_update
 
@@ -82,10 +81,11 @@ Update an existing memo.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| memo_uid | string | Yes | Memo UID |
+| memo_uid | string | Yes | Memo UID or name (e.g., 'abc123' or 'memos/abc123') |
 | content | string | No | New memo content |
 | visibility | string | No | PUBLIC, PROTECTED, or PRIVATE |
 | pinned | boolean | No | Whether to pin the memo |
+| tags | string[] | No | Tags for the memo (replaces existing tags) |
 
 ### memos_delete
 
@@ -93,7 +93,7 @@ Delete a memo by UID.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| memo_uid | string | Yes | Memo UID |
+| memo_uid | string | Yes | Memo UID or name (e.g., 'abc123' or 'memos/abc123') |
 | force | boolean | No | Force delete even if memo has associated data |
 
 ## MCP Client Configuration
@@ -106,9 +106,9 @@ Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_
 {
   "mcpServers": {
     "memos": {
-      "command": "npx",
+      "command": "node",
       "args": [
-        "@jtsang/memos-mcp",
+        "/path/to/memos-mcp/dist/cli.js",
         "--base-url", "http://localhost:5230",
         "--access-token", "YOUR_TOKEN"
       ]
@@ -123,8 +123,8 @@ Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_
 {
   "mcpServers": {
     "memos": {
-      "command": "npx",
-      "args": ["@jtsang/memos-mcp"],
+      "command": "node",
+      "args": ["/path/to/memos-mcp/dist/cli.js"],
       "env": {
         "MEMOS_BASE_URL": "http://localhost:5230",
         "MEMOS_ACCESS_TOKEN": "YOUR_TOKEN"
@@ -137,9 +137,6 @@ Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_
 ## Development
 
 ```bash
-# Install dependencies
-npm install
-
 # Run in development mode
 npm run dev -- --base-url http://localhost:5230 --access-token YOUR_TOKEN
 
@@ -148,9 +145,6 @@ npm run typecheck
 
 # Build
 npm run build
-
-# Run tests
-npm test
 ```
 
 ## License
