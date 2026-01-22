@@ -88,9 +88,11 @@ export class MemosClient {
 
     if (req.relations && req.relations.length > 0) {
       payload.relations = req.relations.map((r) => ({
-        relatedMemo: r.relatedMemo.startsWith("memos/")
-          ? r.relatedMemo
-          : `memos/${r.relatedMemo}`,
+        relatedMemo: {
+          name: r.relatedMemo.startsWith("memos/")
+            ? r.relatedMemo
+            : `memos/${r.relatedMemo}`,
+        },
         type: r.type,
       }));
     }
@@ -121,9 +123,11 @@ export class MemosClient {
     }
     if (req.relations !== undefined) {
       payload.relations = req.relations.map((r) => ({
-        relatedMemo: r.relatedMemo.startsWith("memos/")
-          ? r.relatedMemo
-          : `memos/${r.relatedMemo}`,
+        relatedMemo: {
+          name: r.relatedMemo.startsWith("memos/")
+            ? r.relatedMemo
+            : `memos/${r.relatedMemo}`,
+        },
         type: r.type,
       }));
     }
@@ -176,9 +180,11 @@ export class MemosClient {
 
     const payload = {
       relations: relations.map((r) => ({
-        relatedMemo: r.relatedMemo.startsWith("memos/")
-          ? r.relatedMemo
-          : `memos/${r.relatedMemo}`,
+        relatedMemo: {
+          name: r.relatedMemo.startsWith("memos/")
+            ? r.relatedMemo
+            : `memos/${r.relatedMemo}`,
+        },
         type: r.type,
       })),
     };
