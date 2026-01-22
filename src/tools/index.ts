@@ -5,6 +5,8 @@ import { getSchema, handleGet, type GetArgs } from "./get.js";
 import { createSchema, handleCreate, type CreateArgs } from "./create.js";
 import { updateSchema, handleUpdate, type UpdateArgs } from "./update.js";
 import { deleteSchema, handleDelete, type DeleteArgs } from "./delete.js";
+import { currentUserSchema, handleCurrentUser, type CurrentUserArgs } from "./current-user.js";
+import { userStatsSchema, handleUserStats, type UserStatsArgs } from "./user-stats.js";
 
 export function registerTools(server: McpServer, client: MemosClient): void {
   server.registerTool(
@@ -71,6 +73,34 @@ export function registerTools(server: McpServer, client: MemosClient): void {
     },
     async (args: DeleteArgs) => {
       const result = await handleDelete(client, args);
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
+      };
+    }
+  );
+
+  server.registerTool(
+    "memos_current_user",
+    {
+      description: "Get the authenticated user's info",
+      inputSchema: currentUserSchema,
+    },
+    async (args: CurrentUserArgs) => {
+      const result = await handleCurrentUser(client, args);
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
+      };
+    }
+  );
+
+  server.registerTool(
+    "memos_user_stats",
+    {
+      description: "Get statistics for a user",
+      inputSchema: userStatsSchema,
+    },
+    async (args: UserStatsArgs) => {
+      const result = await handleUserStats(client, args);
       return {
         content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
       };

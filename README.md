@@ -6,7 +6,7 @@ MCP (Model Context Protocol) server for the self-hosted notes app [Memos](https:
 
 - Search memos with filters and pagination
 - Create, read, update, delete memos
-- Tag support for organizing memos
+- Tag support via hashtags in content
 - Access token authentication via Bearer token
 
 ## Requirements
@@ -70,10 +70,9 @@ Create a new memo.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| content | string | Yes | Memo content in Markdown |
+| content | string | Yes | Memo content in Markdown. Add tags as hashtags at the end (e.g., `#work #todo`) |
 | visibility | string | No | PUBLIC, PROTECTED, or PRIVATE (default) |
 | pinned | boolean | No | Whether to pin the memo |
-| tags | string[] | No | Tags for the memo |
 
 ### memos_update
 
@@ -82,10 +81,9 @@ Update an existing memo.
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | memo_uid | string | Yes | Memo UID or name (e.g., 'abc123' or 'memos/abc123') |
-| content | string | No | New memo content |
+| content | string | No | New memo content. Add tags as hashtags at the end (e.g., `#work #todo`) |
 | visibility | string | No | PUBLIC, PROTECTED, or PRIVATE |
 | pinned | boolean | No | Whether to pin the memo |
-| tags | string[] | No | Tags for the memo (replaces existing tags) |
 
 ### memos_delete
 
@@ -95,6 +93,22 @@ Delete a memo by UID.
 |-----------|------|----------|-------------|
 | memo_uid | string | Yes | Memo UID or name (e.g., 'abc123' or 'memos/abc123') |
 | force | boolean | No | Force delete even if memo has associated data |
+
+### memos_current_user
+
+Get the authenticated user's info.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| (none) | | | No parameters required |
+
+### memos_user_stats
+
+Get statistics for a user.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user | string | Yes | User ID or name (e.g., '1' or 'users/1') |
 
 ## MCP Client Configuration
 

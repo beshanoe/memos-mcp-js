@@ -3,17 +3,15 @@ import type { MemosClient } from "../client/memos-client.js";
 import type { MemoResult } from "../types/index.js";
 
 export const createSchema = {
-  content: z.string().describe("Memo content in Markdown"),
+  content: z.string().describe("Memo content in Markdown. Add tags as hashtags at the end (e.g., #work #todo)"),
   visibility: z.string().optional().describe("Visibility: PUBLIC, PROTECTED, PRIVATE (default PRIVATE)"),
   pinned: z.boolean().optional().describe("Whether to pin the memo"),
-  tags: z.array(z.string()).optional().describe("Tags for the memo"),
 };
 
 export type CreateArgs = {
   content: string;
   visibility?: string;
   pinned?: boolean;
-  tags?: string[];
 };
 
 export async function handleCreate(
@@ -28,7 +26,6 @@ export async function handleCreate(
     content: args.content,
     visibility: args.visibility,
     pinned: args.pinned,
-    tags: args.tags,
   });
 
   return {

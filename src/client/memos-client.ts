@@ -4,6 +4,8 @@ import type {
   SearchResponse,
   CreateMemoRequest,
   UpdateMemoRequest,
+  User,
+  UserStats,
 } from "../types/index.js";
 import { MemosApiError } from "../types/index.js";
 import { buildMemoFilter, normalizeVisibility } from "../utils/filter.js";
@@ -81,9 +83,6 @@ export class MemosClient {
     if (req.pinned !== undefined) {
       payload.pinned = req.pinned;
     }
-    if (req.tags !== undefined) {
-      payload.tags = req.tags;
-    }
 
     return this.request<Memo>("/api/v1/memos", {
       method: "POST",
@@ -109,9 +108,6 @@ export class MemosClient {
     if (req.pinned !== undefined) {
       payload.pinned = req.pinned;
     }
-    if (req.tags !== undefined) {
-      payload.tags = req.tags;
-    }
 
     if (Object.keys(payload).length === 1) {
       throw new Error("at least one field must be provided for update");
@@ -132,6 +128,17 @@ export class MemosClient {
     await this.request(`/api/v1/memos/${encodeURIComponent(uid)}${params}`, {
       method: "DELETE",
     });
+  }
+
+  async getCurrentUser(): Promise<User> {
+    return this.request<User>("/api/v1/auth/me");
+  }
+
+  async getUserStats(user: string): Promise<UserStats> {
+    if (!user.trim()) {
+      throw new Error("user is required");
+    }
+    return this.request<UserStats>(`/api/v1/users/${encodeURIComponent(user)}:getStats`);
   }
 
   private async request<T>(
