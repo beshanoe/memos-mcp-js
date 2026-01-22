@@ -6,6 +6,8 @@ import type {
   UpdateMemoRequest,
   User,
   UserStats,
+  MemoRelation,
+  CreateMemoRelation,
 } from "../types/index.js";
 import { MemosApiError } from "../types/index.js";
 import { buildMemoFilter, normalizeVisibility } from "../utils/filter.js";
@@ -84,6 +86,15 @@ export class MemosClient {
       payload.pinned = req.pinned;
     }
 
+    if (req.relations && req.relations.length > 0) {
+      payload.relations = req.relations.map((r) => ({
+        relatedMemo: r.relatedMemo.startsWith("memos/")
+          ? r.relatedMemo
+          : `memos/${r.relatedMemo}`,
+        type: r.type,
+      }));
+    }
+
     return this.request<Memo>("/api/v1/memos", {
       method: "POST",
       body: payload,
@@ -107,6 +118,14 @@ export class MemosClient {
     }
     if (req.pinned !== undefined) {
       payload.pinned = req.pinned;
+    }
+    if (req.relations !== undefined) {
+      payload.relations = req.relations.map((r) => ({
+        relatedMemo: r.relatedMemo.startsWith("memos/")
+          ? r.relatedMemo
+          : `memos/${r.relatedMemo}`,
+        type: r.type,
+      }));
     }
 
     if (Object.keys(payload).length === 1) {
@@ -139,6 +158,35 @@ export class MemosClient {
       throw new Error("user is required");
     }
     return this.request<UserStats>(`/api/v1/users/${encodeURIComponent(user)}:getStats`);
+  }
+
+  async listMemoRelations(uid: string): Promise<{ relations: MemoRelation[] }> {
+    if (!uid.trim()) {
+      throw new Error("memo uid is required");
+    }
+    return this.request<{ relations: MemoRelation[] }>(
+      `/api/v1/memos/${encodeURIComponent(uid)}/relations`
+    );
+  }
+
+  async setMemoRelations(uid: string, relations: CreateMemoRelation[]): Promise<void> {
+    if (!uid.trim()) {
+      throw new Error("memo uid is required");
+    }
+
+    const payload = {
+      relations: relations.map((r) => ({
+        relatedMemo: r.relatedMemo.startsWith("memos/")
+          ? r.relatedMemo
+          : `memos/${r.relatedMemo}`,
+        type: r.type,
+      })),
+    };
+
+    await this.request(`/api/v1/memos/${encodeURIComponent(uid)}/relations`, {
+      method: "PATCH",
+      body: payload,
+    });
   }
 
   private async request<T>(

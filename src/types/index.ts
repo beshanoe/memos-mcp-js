@@ -1,5 +1,13 @@
 export type Visibility = "PUBLIC" | "PROTECTED" | "PRIVATE" | "VISIBILITY_UNSPECIFIED";
 
+export type RelationType = "TYPE_UNSPECIFIED" | "REFERENCE" | "COMMENT";
+
+export interface MemoRelation {
+  memo: { name: string; snippet?: string };
+  relatedMemo: { name: string; snippet?: string };
+  type: RelationType;
+}
+
 export interface Memo {
   name: string;
   uid: string;
@@ -12,6 +20,7 @@ export interface Memo {
   updateTime: string;
   displayTime: string;
   snippet: string;
+  relations?: MemoRelation[];
 }
 
 export interface SearchRequest {
@@ -32,16 +41,23 @@ export interface SearchResponse {
   nextPageToken?: string;
 }
 
+export interface CreateMemoRelation {
+  relatedMemo: string;
+  type: RelationType;
+}
+
 export interface CreateMemoRequest {
   content: string;
   visibility?: string;
   pinned?: boolean;
+  relations?: CreateMemoRelation[];
 }
 
 export interface UpdateMemoRequest {
   content?: string;
   visibility?: string;
   pinned?: boolean;
+  relations?: CreateMemoRelation[];
 }
 
 export interface SearchResult {
@@ -59,6 +75,15 @@ export interface DeleteResult {
   success: boolean;
   uid: string;
   force: boolean;
+}
+
+export interface ListRelationsResult {
+  relations: MemoRelation[];
+}
+
+export interface SetRelationsResult {
+  success: boolean;
+  uid: string;
 }
 
 export class MemosApiError extends Error {

@@ -7,6 +7,8 @@ import { updateSchema, handleUpdate, type UpdateArgs } from "./update.js";
 import { deleteSchema, handleDelete, type DeleteArgs } from "./delete.js";
 import { currentUserSchema, handleCurrentUser, type CurrentUserArgs } from "./current-user.js";
 import { userStatsSchema, handleUserStats, type UserStatsArgs } from "./user-stats.js";
+import { listRelationsSchema, handleListRelations, type ListRelationsArgs } from "./list-relations.js";
+import { setRelationsSchema, handleSetRelations, type SetRelationsArgs } from "./set-relations.js";
 
 export function registerTools(server: McpServer, client: MemosClient): void {
   server.registerTool(
@@ -101,6 +103,34 @@ export function registerTools(server: McpServer, client: MemosClient): void {
     },
     async (args: UserStatsArgs) => {
       const result = await handleUserStats(client, args);
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
+      };
+    }
+  );
+
+  server.registerTool(
+    "memos_list_relations",
+    {
+      description: "List all relations for a specific memo",
+      inputSchema: listRelationsSchema,
+    },
+    async (args: ListRelationsArgs) => {
+      const result = await handleListRelations(client, args);
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
+      };
+    }
+  );
+
+  server.registerTool(
+    "memos_set_relations",
+    {
+      description: "Set/replace all relations for a memo. To add or remove relations, first list them, modify the array, then set.",
+      inputSchema: setRelationsSchema,
+    },
+    async (args: SetRelationsArgs) => {
+      const result = await handleSetRelations(client, args);
       return {
         content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
       };
